@@ -1,0 +1,16 @@
+version: "3.3"
+
+services:
+
+  piwigo:
+    image: linuxserver/piwigo
+    container_name: piwigo
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+    volumes:
+      - ./appdata/config:/config
+    ports:
+      - 8200:80
+    restart: unless-stopped
