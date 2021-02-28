@@ -3,14 +3,29 @@ version: "3.3"
 services:
 
   piwigo:
-    image: linuxserver/piwigo
+    image: mathieuruellan/piwigo
     container_name: piwigo
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Madrid
+    links:
+      - mysql
     volumes:
-      - ./config:/config
+      - ./piwigo/galleries:/var/www/galleries
+      - ./piwigo/local:/var/www/local
+      - ./piwigo/plugins:/var/www/plugins
+      - ./piwigo/themes:/var/www/themes
+      - ./piwigo/cache:/var/www/_data/i
+      - ./piwigo/upload:/var/www/upload
     ports:
-      - 8200:80
+      - "8200:80"
     restart: unless-stopped
+
+  mysql:
+    image: mariadb:latest
+    container_name: piwigo-db
+    volumes:
+       - ./piwigo-db:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=p4ssw0rd
+      - MYSQL_DATABASE=piwigo
+      - MYSQL_USER=piwigo
+      - MYSQL_PASSWORD=p4ssw0rd
+    restart: unless-stopped     
