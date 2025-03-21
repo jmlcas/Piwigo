@@ -1,9 +1,7 @@
-version: "3.3"
-
 services:
 
   piwigo:
-    image: mathieuruellan/piwigo
+    image: mathieuruellan/piwigo:latest
     container_name: piwigo
     links:
       - mysql
