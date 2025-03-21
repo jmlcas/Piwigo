@@ -3,8 +3,8 @@ services:
   piwigo:
     image: mathieuruellan/piwigo:latest
     container_name: piwigo
-    links:
-      - mysql
+    depends_on:
+      - mariadb
     volumes:
       - ./piwigo/galleries:/var/www/galleries
       - ./piwigo/local:/var/www/local
@@ -16,7 +16,7 @@ services:
       - "8200:80"
     restart: unless-stopped
 
-  mysql:
+  mariadb:
     image: mariadb:latest
     container_name: piwigo-db
     volumes:
