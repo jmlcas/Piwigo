@@ -3,6 +3,8 @@ services:
   piwigo:
     image: mathieuruellan/piwigo:latest
     container_name: piwigo
+    environment:
+      - BASH_MODE=set -e   
     depends_on:
       - mariadb
     volumes:
@@ -12,6 +14,8 @@ services:
       - ./piwigo/themes:/var/www/themes
       - ./piwigo/cache:/var/www/_data/i
       - ./piwigo/upload:/var/www/upload
+      - ./var/log:/var/log
+      - ./var/log/piwigo:/var/log/apache2      
     ports:
       - "8200:80"
     restart: unless-stopped
