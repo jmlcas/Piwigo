@@ -1,29 +1,28 @@
 services:
 
-  piwigo:
-    image: mathieuruellan/piwigo:latest
-    container_name: piwigo
-    depends_on:
-      - mariadb
-    volumes:
-      - ./piwigo/galleries:/var/www/galleries
-      - ./piwigo/local:/var/www/local
-      - ./piwigo/plugins:/var/www/plugins
-      - ./piwigo/themes:/var/www/themes
-      - ./piwigo/cache:/var/www/_data/i
-      - ./piwigo/upload:/var/www/upload   
-    ports:
-      - "8200:80"
+  piwigo-main:
+    image: piwigo/piwigo:latest
     restart: unless-stopped
-
-  mariadb:
-    image: mariadb:latest
-    container_name: piwigo-db
-    volumes:
-       - ./piwigo-db:/var/lib/mysql
     environment:
-      - MYSQL_ROOT_PASSWORD=p4ssw0rd
-      - MYSQL_DATABASE=piwigo
-      - MYSQL_USER=piwigo
-      - MYSQL_PASSWORD=p4ssw0rd
-    restart: unless-stopped     
+      - TZ=${timezone}
+      - PIWIGO_UID=${PIWIGO_UID}
+      - PIWIGO_GID=${PIWIGO_GID}
+    ports:
+      - ${piwigo_port}:80
+    depends_on:
+      - piwigo-db
+    volumes:
+      - ./piwigo-data/piwigo:/var/www/html/piwigo/
+      - ./piwigo-data/scripts:/usr/local/bin/scripts/
+
+  piwigo-db:
+    image: docker.io/library/mariadb:lts
+    restart: unless-stopped
+    environment:
+      - MARIADB_RANDOM_ROOT_PASSWORD=true
+      - MARIADB_USER=piwigodb_user
+      - MARIADB_DATABASE=piwigodb
+      - MARIADB_PASSWORD=${db_user_password} 
+      - TZ=${timezone}
+    volumes:
+      - ./piwigo-data/mysql:/var/lib/mysql
